@@ -100,7 +100,7 @@
 
         /* MAIN CONTAINER */
         .scene-wrapper {
-            position: relative; width: 100%; max-width: 380px; height: 520px;
+            position: relative; width: 100%; max-width: 380px; height: 540px;
             display: flex; justify-content: center; align-items: flex-end; perspective: 1000px; z-index: 2;
         }
 
@@ -176,19 +176,20 @@
         .mailbox-flag::before { content: ''; position: absolute; top: 0; left: -8px; width: 32px; height: 24px; background: var(--flag-color); border-radius: 4px; }
         .mailbox-post { position: absolute; bottom: -60px; left: calc(50% - 12px); width: 24px; height: 80px; background: var(--mailbox-dark); z-index: 1; }
 
-        /* --- CARD --- */
+        /* --- RESPONSIVE CARD CONFIGURATION --- */
         .card {
-            background: var(--paper-creme); border: 1px solid #f2e9d2; padding: 24px; border-radius: 12px;
+            background: var(--paper-creme); border: 1px solid #f2e9d2; padding: 20px; border-radius: 12px;
             width: 180px; height: 130px; position: absolute; bottom: 80px; left: calc(50% - 90px); z-index: 3;
             transform: scale(0.6) translateY(0); opacity: 0; transform-origin: center bottom;
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.7s, height 0.7s, opacity 0.4s, left 0.7s;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden;
+            display: flex; flex-direction: column;
         }
         .btn-back { position: absolute; top: 14px; left: 16px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; display: none; z-index: 15; }
 
         /* --- CARD HEADER DECORATION --- */
         .card-header-deco {
-            display: flex; justify-content: space-between; align-items: center; width: 100%; height: 65px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5cb; padding-bottom: 8px;
+            display: flex; justify-content: space-between; align-items: center; width: 100%; height: 60px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5cb; padding-bottom: 8px; flex-shrink: 0;
         }
         .header-title-side { text-align: right; font-family: 'Merriweather', serif; }
         .header-title-side .title-top { font-size: 13px; font-weight: 700; color: var(--text-dark); }
@@ -238,42 +239,62 @@
         .scene-wrapper.door-open .mailbox-flag { transform: rotate(-90deg); }
         .scene-wrapper.door-open .tap-hint { opacity: 0; transform: translate(-50%, -20px); }
 
-        .scene-wrapper.letter-up .card { opacity: 1; width: 92%; height: 420px; left: 4%; bottom: 70px; transform: scale(1) translateY(0); z-index: 10; box-shadow: 0 20px 40px rgba(43, 61, 42, 0.15); }
+        /* FIX: Menggunakan max-height dinamis agar tidak nembus rumput di HP pendek */
+        .scene-wrapper.letter-up .card { 
+            opacity: 1; 
+            width: 92%; 
+            height: 420px;
+            max-height: calc(100vh - 140px);
+            left: 4%; 
+            bottom: 90px; 
+            transform: scale(1) translateY(0); 
+            z-index: 10; 
+            box-shadow: 0 20px 40px rgba(43, 61, 42, 0.15); 
+        }
         .scene-wrapper.letter-up .mailbox { transform: scale(0.85) translateY(30px); opacity: 0.12; pointer-events: none; }
         .scene-wrapper.letter-up .ghibli-characters { opacity: 0.15; }
 
         /* PAGES TRANSITION */
-        .page { display: none; opacity: 0; transform: scale(0.96) translateY(10px); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-direction: column; height: 100%; }
+        .page { display: none; opacity: 0; transform: scale(0.96) translateY(10px); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-direction: column; height: 100%; overflow: hidden; }
         .page.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
 
-        /* --- ENHANCED TYPOGRAPHY (FONT SIZES UPGRADED) --- */
-        h2 { font-family: 'Merriweather', serif; font-size: 22px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; line-height: 1.4; }
+        /* FIX: Area konten teks dibuat bisa scroll tipis kalau layarnya terlalu sempit */
+        .page-content-scroll {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 12px;
+            padding-right: 4px;
+        }
+        /* Menyembunyikan scrollbar agar tetap estetik */
+        .page-content-scroll::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        h2 { font-family: 'Merriweather', serif; font-size: 21px; font-weight: 700; color: var(--text-dark); margin-bottom: 10px; line-height: 1.35; }
         
         .fade-in-text {
             animation: fadeInTextEffect 1s ease forwards;
-            color: var(--text-muted); font-size: 15px; line-height: 1.65; margin-bottom: 22px; font-weight: 400;
+            color: var(--text-muted); font-size: 15px; line-height: 1.6; font-weight: 400;
         }
         @keyframes fadeInTextEffect { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--ghibli-grass); color: white; border: none; padding: 13px 24px; font-size: 15px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.25s ease; width: 100%; box-shadow: 0 4px 10px rgba(75, 106, 74, 0.2); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--ghibli-grass); color: white; border: none; padding: 12px 24px; font-size: 15px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.25s ease; width: 100%; box-shadow: 0 4px 10px rgba(75, 106, 74, 0.2); flex-shrink: 0; }
         .btn:hover { background-color: #3b543a; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(75, 106, 74, 0.3); }
         .btn:active { transform: translateY(0); }
-        .btn-secondary { background-color: transparent; color: var(--text-muted); border: 1px solid #cbd5cb; margin-top: auto; box-shadow: none; font-weight: 500; }
+        .btn-secondary { background-color: transparent; color: var(--text-muted); border: 1px solid #cbd5cb; box-shadow: none; font-weight: 500; }
         .btn-secondary:hover { background-color: #f2f7f1; color: var(--text-dark); box-shadow: none; transform: none; }
 
-        .btn-group { display: flex; gap: 12px; margin-top: auto; position: relative; height: 48px; width: 100%; }
+        .btn-group { display: flex; gap: 12px; position: relative; height: 46px; width: 100%; flex-shrink: 0; }
         #btn-no { background-color: transparent; color: var(--text-muted); border: 1px solid #d3ded2; position: absolute; right: 0; width: calc(50% - 6px); transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: none; }
         #btn-yes { width: calc(50% - 6px); position: absolute; left: 0; }
 
-        .input-container { margin-bottom: 20px; width: 100%; }
-        .custom-input { width: 100%; padding: 14px 16px; border: 1px solid #d3ded2; border-radius: 12px; font-size: 15px; outline: none; color: var(--text-dark); transition: border 0.3s; }
+        .input-container { margin-bottom: 14px; width: 100%; }
+        .custom-input { width: 100%; padding: 12px 16px; border: 1px solid #d3ded2; border-radius: 12px; font-size: 15px; outline: none; color: var(--text-dark); transition: border 0.3s; }
         .custom-input:focus { border-color: var(--ghibli-grass); background-color: #fdfdfd; }
 
-        .summary-box { background-color: #f2f7f1; border-radius: 10px; padding: 14px; margin-bottom: 12px; text-align: left; border: 1px dashed #cbd5cb; animation: popUp 0.5s ease; }
+        .summary-box { background-color: #f2f7f1; border-radius: 10px; padding: 12px; margin-bottom: 4px; text-align: left; border: 1px dashed #cbd5cb; animation: popUp 0.5s ease; }
         @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .summary-label { font-size: 11.5px; text-transform: uppercase; color: var(--ghibli-grass); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
-        .summary-value { font-family: 'Merriweather', serif; font-size: 16px; font-weight: 700; color: var(--text-dark); line-height: 1.4; }
+        .summary-label { font-size: 11px; text-transform: uppercase; color: var(--ghibli-grass); font-weight: 600; margin-bottom: 4px; letter-spacing: 0.5px; }
+        .summary-value { font-family: 'Merriweather', serif; font-size: 15px; font-weight: 700; color: var(--text-dark); line-height: 1.4; }
 
         .sparkle {
             position: absolute; color: #f29f05; font-size: 14px; pointer-events: none;
@@ -325,9 +346,11 @@
                         <div class="title-sub">Air Mail #01</div>
                     </div>
                 </div>
-                <h2>Hey, You! 💌</h2>
-                <p class="fade-in-text">A sweet little letter just landed in your mailbox. Curious to see what's inside? Let's open it now.</p>
-                <button class="btn" style="margin-top: auto;" onclick="nextPage(2)">Open Letter</button>
+                <div class="page-content-scroll">
+                    <h2>Hey, You! 💌</h2>
+                    <p class="fade-in-text">A sweet little letter just landed in your mailbox. Curious to see what's inside? Let's open it now.</p>
+                </div>
+                <button class="btn" onclick="nextPage(2)">Open Letter</button>
             </div>
 
             <div id="page2" class="page">
@@ -341,9 +364,11 @@
                         <div class="title-sub">Forest Whispers</div>
                     </div>
                 </div>
-                <h2>By the way...</h2>
-                <p class="fade-in-text">The weather has been absolutely beautiful lately. It feels like such a waste to spend the upcoming weekend trapped inside the room.</p>
-                <button class="btn" style="margin-top: auto;" onclick="nextPage(3)">Continue</button>
+                <div class="page-content-scroll">
+                    <h2>By the way...</h2>
+                    <p class="fade-in-text">The weather has been absolutely beautiful lately. It feels like such a waste to spend the upcoming weekend trapped inside the room.</p>
+                </div>
+                <button class="btn" onclick="nextPage(3)">Continue</button>
             </div>
 
             <div id="page3" class="page">
@@ -357,8 +382,10 @@
                         <div class="title-sub">Princess Call</div>
                     </div>
                 </div>
-                <h2>Are you free this weekend? Want to hang out?</h2>
-                <p class="fade-in-text">I'm officially asking you out.</p>
+                <div class="page-content-scroll">
+                    <h2>Are you free this weekend? Want to hang out?</h2>
+                    <p class="fade-in-text">I'm officially asking you out.</p>
+                </div>
                 <div class="btn-group">
                     <button id="btn-yes" class="btn" onclick="nextPage(4)">I'd love to!</button>
                     <button id="btn-no" class="btn" onmouseover="evade()" onclick="evade()">No</button>
@@ -376,12 +403,14 @@
                         <div class="title-sub">Bakery Note</div>
                     </div>
                 </div>
-                <h2>Awesome!</h2>
-                <p class="fade-in-text">You can choose whatever you want to do or where we should go. Write it down here:</p>
-                <div class="input-container">
-                    <input type="text" id="user-destination" class="custom-input" placeholder="E.g., Grab some ice cream / take a walk..." autocomplete="off">
+                <div class="page-content-scroll">
+                    <h2>Awesome!</h2>
+                    <p class="fade-in-text">You can choose whatever you want to do or where we should go. Write it down here:</p>
                 </div>
-                <button class="btn" style="margin-top: auto;" onclick="finalize()">Lock Choice</button>
+                <div class="input-container">
+                    <input type="text" id="user-destination" class="custom-input" placeholder="E.g., Grab some ice cream..." autocomplete="off">
+                </div>
+                <button class="btn" onclick="finalize()">Lock Choice</button>
             </div>
 
             <div id="page5" class="page">
@@ -395,11 +424,13 @@
                         <div class="title-sub">A Hearth's Oath</div>
                     </div>
                 </div>
-                <h2>It's a deal! ✨</h2>
-                <p class="fade-in-text">Your choice has been saved. I honestly can't wait to hang out with you.</p>
-                <div class="summary-box">
-                    <div class="summary-label">Our Agenda</div>
-                    <div id="final-choice" class="summary-value">—</div>
+                <div class="page-content-scroll">
+                    <h2>It's a deal! ✨</h2>
+                    <p class="fade-in-text">Your choice has been saved. I honestly can't wait to hang out with you.</p>
+                    <div class="summary-box">
+                        <div class="summary-label">Our Agenda</div>
+                        <div id="final-choice" class="summary-value">—</div>
+                    </div>
                 </div>
                 <button class="btn btn-secondary" onclick="closeMailbox()">Put Back & Close Box</button>
             </div>
