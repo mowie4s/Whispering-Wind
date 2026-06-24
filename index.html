@@ -107,8 +107,8 @@
         /* TAP HINT TEXT */
         .tap-hint {
             position: absolute; bottom: 280px; left: 50%; transform: translateX(-50%);
-            background-color: rgba(44, 62, 43, 0.85); color: #fdfbf7; padding: 8px 16px; border-radius: 20px;
-            font-size: 12.5px; font-weight: 500; letter-spacing: 0.3px; white-space: nowrap;
+            background-color: rgba(44, 62, 43, 0.85); color: #fdfbf7; padding: 10px 18px; border-radius: 20px;
+            font-size: 13.5px; font-weight: 500; letter-spacing: 0.3px; white-space: nowrap;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 20; pointer-events: none; 
             animation: floatHint 2s infinite ease-in-out; transition: opacity 0.4s ease, transform 0.4s ease;
         }
@@ -162,7 +162,6 @@
         .scene-wrapper:not(.door-open) .mailbox:hover .mailbox-flag {
             transform: rotate(-15deg);
         }
-        /* Karakter di atas melompat kecil saat box di-hover */
         .scene-wrapper:not(.door-open) .mailbox:hover + .card + .ghibli-characters .chibi-totoro { transform: translateY(-5px); }
         .scene-wrapper:not(.door-open) .mailbox:hover + .card + .ghibli-characters .susuwatari { transform: translateY(-3px) scale(1.05); }
 
@@ -185,15 +184,15 @@
             transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.7s, height 0.7s, opacity 0.4s, left 0.7s;
             box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden;
         }
-        .btn-back { position: absolute; top: 14px; left: 16px; background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; display: none; z-index: 15; }
+        .btn-back { position: absolute; top: 14px; left: 16px; background: transparent; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; display: none; z-index: 15; }
 
         /* --- CARD HEADER DECORATION --- */
         .card-header-deco {
             display: flex; justify-content: space-between; align-items: center; width: 100%; height: 65px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5cb; padding-bottom: 8px;
         }
         .header-title-side { text-align: right; font-family: 'Merriweather', serif; }
-        .header-title-side .title-top { font-size: 12px; font-weight: 700; color: var(--text-dark); }
-        .header-title-side .title-sub { font-size: 10px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+        .header-title-side .title-top { font-size: 13px; font-weight: 700; color: var(--text-dark); }
+        .header-title-side .title-sub { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
 
         /* --- AVATARS ANIMATIONS --- */
         .avatar-kaonashi { width: 40px; height: 55px; background: #1a1a1a; border-radius: 20px 20px 5px 5px; position: relative; }
@@ -239,7 +238,7 @@
         .scene-wrapper.door-open .mailbox-flag { transform: rotate(-90deg); }
         .scene-wrapper.door-open .tap-hint { opacity: 0; transform: translate(-50%, -20px); }
 
-        .scene-wrapper.letter-up .card { opacity: 1; width: 92%; height: 410px; left: 4%; bottom: 80px; transform: scale(1) translateY(0); z-index: 10; box-shadow: 0 20px 40px rgba(43, 61, 42, 0.15); }
+        .scene-wrapper.letter-up .card { opacity: 1; width: 92%; height: 420px; left: 4%; bottom: 70px; transform: scale(1) translateY(0); z-index: 10; box-shadow: 0 20px 40px rgba(43, 61, 42, 0.15); }
         .scene-wrapper.letter-up .mailbox { transform: scale(0.85) translateY(30px); opacity: 0.12; pointer-events: none; }
         .scene-wrapper.letter-up .ghibli-characters { opacity: 0.15; }
 
@@ -247,36 +246,37 @@
         .page { display: none; opacity: 0; transform: scale(0.96) translateY(10px); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-direction: column; height: 100%; }
         .page.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
 
-        h2 { font-family: 'Merriweather', serif; font-size: 19px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; line-height: 1.4; }
+        /* --- ENHANCED TYPOGRAPHY (FONT SIZES UPGRADED) --- */
+        h2 { font-family: 'Merriweather', serif; font-size: 22px; font-weight: 700; color: var(--text-dark); margin-bottom: 12px; line-height: 1.4; }
         
         .fade-in-text {
             animation: fadeInTextEffect 1s ease forwards;
-            color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 20px;
+            color: var(--text-muted); font-size: 15px; line-height: 1.65; margin-bottom: 22px; font-weight: 400;
         }
         @keyframes fadeInTextEffect { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--ghibli-grass); color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: 500; border-radius: 20px; cursor: pointer; transition: all 0.25s ease; width: 100%; box-shadow: 0 4px 10px rgba(75, 106, 74, 0.2); }
+        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--ghibli-grass); color: white; border: none; padding: 13px 24px; font-size: 15px; font-weight: 600; border-radius: 20px; cursor: pointer; transition: all 0.25s ease; width: 100%; box-shadow: 0 4px 10px rgba(75, 106, 74, 0.2); }
         .btn:hover { background-color: #3b543a; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(75, 106, 74, 0.3); }
         .btn:active { transform: translateY(0); }
-        .btn-secondary { background-color: transparent; color: var(--text-muted); border: 1px solid #cbd5cb; margin-top: auto; box-shadow: none; }
+        .btn-secondary { background-color: transparent; color: var(--text-muted); border: 1px solid #cbd5cb; margin-top: auto; box-shadow: none; font-weight: 500; }
         .btn-secondary:hover { background-color: #f2f7f1; color: var(--text-dark); box-shadow: none; transform: none; }
 
-        .btn-group { display: flex; gap: 12px; margin-top: auto; position: relative; height: 45px; width: 100%; }
+        .btn-group { display: flex; gap: 12px; margin-top: auto; position: relative; height: 48px; width: 100%; }
         #btn-no { background-color: transparent; color: var(--text-muted); border: 1px solid #d3ded2; position: absolute; right: 0; width: calc(50% - 6px); transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: none; }
         #btn-yes { width: calc(50% - 6px); position: absolute; left: 0; }
 
         .input-container { margin-bottom: 20px; width: 100%; }
-        .custom-input { width: 100%; padding: 14px 16px; border: 1px solid #d3ded2; border-radius: 12px; font-size: 14px; outline: none; color: var(--text-dark); transition: border 0.3s; }
+        .custom-input { width: 100%; padding: 14px 16px; border: 1px solid #d3ded2; border-radius: 12px; font-size: 15px; outline: none; color: var(--text-dark); transition: border 0.3s; }
         .custom-input:focus { border-color: var(--ghibli-grass); background-color: #fdfdfd; }
 
         .summary-box { background-color: #f2f7f1; border-radius: 10px; padding: 14px; margin-bottom: 12px; text-align: left; border: 1px dashed #cbd5cb; animation: popUp 0.5s ease; }
         @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         
-        .summary-label { font-size: 11px; text-transform: uppercase; color: var(--ghibli-grass); font-weight: 600; margin-bottom: 4px; }
-        .summary-value { font-family: 'Merriweather', serif; font-size: 14px; font-weight: 700; color: var(--text-dark); }
+        .summary-label { font-size: 11.5px; text-transform: uppercase; color: var(--ghibli-grass); font-weight: 600; margin-bottom: 6px; letter-spacing: 0.5px; }
+        .summary-value { font-family: 'Merriweather', serif; font-size: 16px; font-weight: 700; color: var(--text-dark); line-height: 1.4; }
 
         .sparkle {
-            position: absolute; color: #f29f05; font-size: 12px; pointer-events: none;
+            position: absolute; color: #f29f05; font-size: 14px; pointer-events: none;
             animation: sparkleAnim 1.5s linear infinite; opacity: 0;
         }
         @keyframes sparkleAnim { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1.3) rotate(180deg); opacity: 0; } }
