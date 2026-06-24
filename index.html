@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You've got mail...</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600&family=Merriweather:ital,wght=0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --mailbox-body: #4b6a4a; 
+            --mailbox-dark: #374f36;
+            --mailbox-inside: #253524;
+            --flag-color: #8b2635; 
+            --paper-creme: #fdfbf7;
+            --text-dark: #2c3e2b;
+            --text-muted: #5a6b59;
+            --ghibli-grass: #5c8358;
+            --bg-top: #dbe9f4;
+            --bg-mid: #edf4f9;
+            --bg-bottom: #e1ebe2;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--bg-top) 0%, var(--bg-mid) 50%, var(--bg-bottom) 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            transition: background 1.5s ease;
+            position: relative;
+        }
+
+        /* --- CINEMATIC LIGHT RAYS --- */
+        body::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.25) 0%, rgba(255,255,255,0) 60%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* --- BACKGROUND SCENERY (ANIMATED CLOUDS) --- */
+        .clouds-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 60%;
+            pointer-events: none; overflow: hidden; z-index: 0;
+        }
+        .cloud {
+            position: absolute; background: rgba(255, 255, 255, 0.75); border-radius: 100px; filter: blur(4px);
+        }
+        .cloud::before, .cloud::after {
+            content: ''; position: absolute; background: rgba(255, 255, 255, 0.75); border-radius: 50%;
+        }
+        .cloud-1 { width: 180px; height: 60px; top: 15%; left: -200px; animation: moveCloud 35s linear infinite; }
+        .cloud-1::before { width: 80px; height: 80px; top: -40px; left: 30px; }
+        .cloud-1::after { width: 100px; height: 100px; top: -50px; left: 70px; }
+        .cloud-2 { width: 240px; height: 70px; top: 35%; left: -280px; animation: moveCloud 48s linear infinite; animation-delay: -15s; opacity: 0.6; }
+        .cloud-2::before { width: 100px; height: 100px; top: -50px; left: 40px; }
+        .cloud-2::after { width: 120px; height: 120px; top: -60px; left: 100px; }
+
+        @keyframes moveCloud { 0% { left: -300px; } 100% { left: 100vw; } }
+
+        /* --- SWAYING LEAVES BACKGROUND --- */
+        .leaf-ambient {
+            position: absolute; width: 12px; height: 7px; background: #8da88b; border-radius: 0 100px;
+            opacity: 0.5; pointer-events: none; z-index: 1; animation: flyLeaf 18s linear infinite;
+        }
+        .leaf-1 { top: 40%; left: -5%; animation-delay: 0s; }
+        .leaf-2 { top: 25%; left: -5%; animation-delay: 5s; animation-duration: 22s; }
+        .leaf-3 { top: 60%; left: -5%; animation-delay: 11s; animation-duration: 15s; }
+
+        @keyframes flyLeaf {
+            0% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% { transform: translateX(110vw) translateY(-100px) rotate(720deg); opacity: 0; }
+        }
+
+        /* --- MEADOW GRASS ENVIRONMENT --- */
+        .meadow {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 80px;
+            background: linear-gradient(to bottom, var(--ghibli-grass) 0%, #3a5338 100%);
+            z-index: 1; border-top: 4px solid #6fa36a;
+        }
+        .meadow::before {
+            content: '✿  ❀  ⚘  ✿  ❀  ⚘'; position: absolute; top: -18px; left: 0; width: 100%;
+            text-align: center; font-size: 14px; color: rgba(255, 255, 255, 0.4); letter-spacing: 40px;
+            text-shadow: 0 10px 0 rgba(0,0,0,0.1);
+        }
+
+        /* MAIN CONTAINER */
+        .scene-wrapper {
+            position: relative; width: 100%; max-width: 380px; height: 520px;
+            display: flex; justify-content: center; align-items: flex-end; perspective: 1000px; z-index: 2;
+        }
+
+        /* TAP HINT TEXT */
+        .tap-hint {
+            position: absolute; bottom: 280px; left: 50%; transform: translateX(-50%);
+            background-color: rgba(44, 62, 43, 0.85); color: #fdfbf7; padding: 8px 16px; border-radius: 20px;
+            font-size: 12.5px; font-weight: 500; letter-spacing: 0.3px; white-space: nowrap;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1); z-index: 20; pointer-events: none; 
+            animation: floatHint 2s infinite ease-in-out; transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        @keyframes floatHint { 0%, 100% { transform: translate(-50%, 0); } 50% { transform: translate(-50%, -8px); opacity: 0.9; } }
+
+        /* --- OUTER DECORATION CHARACTERS --- */
+        .ghibli-characters {
+            position: absolute; bottom: 238px; width: 160px; height: 50px; z-index: 1;
+            display: flex; justify-content: space-around; align-items: flex-end; pointer-events: none; transition: opacity 0.5s ease;
+        }
+
+        .chibi-totoro {
+            width: 32px; height: 40px; background: #fff; border-radius: 50% 50% 45% 45%; position: relative; border: 1px solid #e0ebd3;
+            transition: transform 0.3s ease;
+        }
+        .chibi-totoro::before, .chibi-totoro::after {
+            content: ''; position: absolute; top: -8px; width: 8px; height: 14px;
+            background: #fff; border-radius: 50% 50% 0 0; border: 1px solid #e0ebd3; border-bottom: none;
+        }
+        .chibi-totoro::before { left: 4px; transform: rotate(-10deg); }
+        .chibi-totoro::after { right: 4px; transform: rotate(10deg); }
+
+        .totoro-eyes {
+            position: absolute; top: 10px; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 0 5px;
+            animation: blink 4s infinite;
+        }
+        .totoro-eyes::before, .totoro-eyes::after { content: '•'; font-size: 14px; color: #374f36; line-height: 0; }
+
+        .susuwatari {
+            width: 22px; height: 22px; background: #2a2a2a; border-radius: 50%; position: relative;
+            animation: jitter 0.3s infinite alternate; transition: transform 0.3s ease;
+        }
+        .susuwatari::before {
+            content: ''; position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px; border-radius: 50%; border: 2px dashed #2a2a2a;
+        }
+        .susu-eyes { position: absolute; top: 5px; left: 3px; width: 16px; height: 8px; display: flex; justify-content: space-between; animation: blink 3.5s infinite; }
+        .susu-eyes::before, .susu-eyes::after { content: '•'; font-size: 9px; color: black; line-height: 6px; width: 7px; height: 7px; background: white; border-radius: 50%; display: flex; justify-content: center; }
+
+        @keyframes jitter { 0% { transform: translateY(0); } 100% { transform: translateY(-2px); } }
+        @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.1); } }
+
+        /* --- MAILBOX WITH INTERACTIVE RESPONSES --- */
+        .mailbox {
+            position: absolute; bottom: 60px; width: 220px; height: 180px; background: var(--mailbox-body);
+            border-radius: 90px 90px 12px 12px; box-shadow: 0 15px 35px rgba(43, 61, 42, 0.25), inset -15px 0 30px rgba(0,0,0,0.1);
+            z-index: 2; transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1); cursor: pointer;
+        }
+        .scene-wrapper:not(.door-open) .mailbox:hover {
+            transform: translateY(-4px) rotate(1deg);
+        }
+        .scene-wrapper:not(.door-open) .mailbox:hover .mailbox-flag {
+            transform: rotate(-15deg);
+        }
+        /* Karakter di atas melompat kecil saat box di-hover */
+        .scene-wrapper:not(.door-open) .mailbox:hover + .card + .ghibli-characters .chibi-totoro { transform: translateY(-5px); }
+        .scene-wrapper:not(.door-open) .mailbox:hover + .card + .ghibli-characters .susuwatari { transform: translateY(-3px) scale(1.05); }
+
+        .mailbox-inside { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--mailbox-inside); border-radius: 90px 90px 12px 12px; border: 8px solid var(--mailbox-dark); overflow: hidden; }
+        .mailbox-door {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--mailbox-body);
+            border: 6px solid var(--mailbox-dark); border-radius: 90px 90px 12px 12px; transform-origin: bottom;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); z-index: 5; box-shadow: inset 0 10px 20px rgba(255,255,255,0.15);
+        }
+        .mailbox-door::after { content: ''; position: absolute; top: 25px; left: calc(50% - 15px); width: 30px; height: 8px; background: var(--mailbox-dark); border-radius: 4px; }
+        .mailbox-flag { position: absolute; top: 40px; right: -24px; width: 16px; height: 80px; background: #a0a0a0; border-radius: 4px; transform-origin: bottom center; transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 6; }
+        .mailbox-flag::before { content: ''; position: absolute; top: 0; left: -8px; width: 32px; height: 24px; background: var(--flag-color); border-radius: 4px; }
+        .mailbox-post { position: absolute; bottom: -60px; left: calc(50% - 12px); width: 24px; height: 80px; background: var(--mailbox-dark); z-index: 1; }
+
+        /* --- CARD --- */
+        .card {
+            background: var(--paper-creme); border: 1px solid #f2e9d2; padding: 24px; border-radius: 12px;
+            width: 180px; height: 130px; position: absolute; bottom: 80px; left: calc(50% - 90px); z-index: 3;
+            transform: scale(0.6) translateY(0); opacity: 0; transform-origin: center bottom;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.7s, height 0.7s, opacity 0.4s, left 0.7s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3); overflow: hidden;
+        }
+        .btn-back { position: absolute; top: 14px; left: 16px; background: transparent; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; display: none; z-index: 15; }
+
+        /* --- CARD HEADER DECORATION --- */
+        .card-header-deco {
+            display: flex; justify-content: space-between; align-items: center; width: 100%; height: 65px; margin-bottom: 12px; border-bottom: 1px dashed #cbd5cb; padding-bottom: 8px;
+        }
+        .header-title-side { text-align: right; font-family: 'Merriweather', serif; }
+        .header-title-side .title-top { font-size: 12px; font-weight: 700; color: var(--text-dark); }
+        .header-title-side .title-sub { font-size: 10px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+
+        /* --- AVATARS ANIMATIONS --- */
+        .avatar-kaonashi { width: 40px; height: 55px; background: #1a1a1a; border-radius: 20px 20px 5px 5px; position: relative; }
+        .kaonashi-mask { width: 26px; height: 38px; background: #fff; border-radius: 13px 13px 11px 11px; position: absolute; top: 4px; left: 7px; }
+        .kaonashi-eyes { position: absolute; top: 10px; left: 4px; right: 4px; display: flex; justify-content: space-around; }
+        .kaonashi-eyes::before, .kaonashi-eyes::after { content: ''; width: 5px; height: 2px; background: #333; }
+        .kaonashi-mark-top { position: absolute; top: 2px; left: 6px; right: 6px; display: flex; justify-content: space-between; }
+        .kaonashi-mark-top::before, .kaonashi-mark-top::after { content: ''; width: 3px; height: 4px; background: #8a6c9c; border-radius: 50%; }
+        .kaonashi-mouth { width: 6px; height: 2px; background: #333; position: absolute; bottom: 12px; left: 10px; border-radius: 50%; }
+
+        .avatar-totoro { width: 48px; height: 55px; background: #9fa8a3; border-radius: 24px 24px 10px 10px; position: relative; }
+        .avatar-totoro::before, .avatar-totoro::after { content: ''; position: absolute; top: -8px; width: 8px; height: 14px; background: #9fa8a3; border-radius: 50% 50% 0 0; }
+        .avatar-totoro::before { left: 8px; transform: rotate(-10deg); }
+        .avatar-totoro::after { right: 8px; transform: rotate(10deg); }
+        .totoro-face-details { position: absolute; top: 12px; width: 100%; display: flex; justify-content: space-between; padding: 0 10px; }
+        .totoro-face-details::before, .totoro-face-details::after { content: '•'; font-size: 12px; color: #fff; text-shadow: 0 0 2px #000; line-height: 0; }
+        .totoro-belly { width: 34px; height: 24px; background: #f7f5ed; border-radius: 50% 50% 10px 10px; position: absolute; bottom: 0; left: 7px; display: flex; justify-content: center; gap: 3px; padding-top: 4px; }
+        .totoro-belly::before { content: '⌃'; font-size: 8px; color: #9fa8a3; font-weight: bold; }
+
+        .avatar-kodama { width: 38px; height: 45px; background: #f0f4f1; border-radius: 50% 45% 50% 45%; position: relative; transform: rotate(-8deg); animation: shakeHead 2.5s infinite ease-in-out; margin-left: 6px; }
+        .kodama-eyes { position: absolute; top: 14px; left: 6px; right: 6px; display: flex; justify-content: space-around; }
+        .kodama-eyes::before, .kodama-eyes::after { content: ''; width: 6px; height: 7px; background: #1c2620; border-radius: 50%; }
+        .kodama-mouth { width: 5px; height: 5px; background: #1c2620; border-radius: 50%; position: absolute; top: 24px; left: 16px; }
+        @keyframes shakeHead { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+
+        .avatar-jiji { width: 40px; height: 50px; background: #242424; border-radius: 20px 20px 5px 5px; position: relative; }
+        .avatar-jiji::before, .avatar-jiji::after { content: ''; position: absolute; top: -10px; width: 12px; height: 18px; background: #242424; border-radius: 70% 30% 0 0; }
+        .avatar-jiji::before { left: 2px; transform: rotate(-15deg); border-left: 2px solid #543a59; }
+        .avatar-jiji::after { right: 2px; transform: rotate(15deg); border-right: 2px solid #543a59; }
+        .jiji-eyes { position: absolute; top: 12px; left: 4px; right: 4px; display: flex; justify-content: space-between; }
+        .jiji-eyes::before, .jiji-eyes::after { content: '•'; font-size: 16px; color: #fff; width: 14px; height: 14px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: black; }
+        .jiji-nose { width: 4px; height: 2px; background: #f0a3b7; position: absolute; top: 26px; left: 18px; border-radius: 50%; }
+
+        .avatar-calcifer { width: 42px; height: 50px; background: linear-gradient(to top, #d9381e, #f29f05); border-radius: 50% 50% 40% 40%; position: relative; animation: flare 0.4s infinite alternate; box-shadow: 0 0 10px rgba(242,159,5,0.5); }
+        .avatar-calcifer::before { content: ''; position: absolute; top: -6px; left: 6px; width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 16px solid #f29f05; }
+        .calcifer-eyes { position: absolute; top: 14px; left: 4px; right: 4px; display: flex; justify-content: space-around; z-index: 2; }
+        .calcifer-eyes::before, .calcifer-eyes::after { content: '•'; font-size: 14px; color: #000; width: 11px; height: 11px; background: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
+        .calcifer-mouth { width: 14px; height: 6px; background: #590c07; border-radius: 0 0 10px 10px; position: absolute; top: 28px; left: 14px; z-index: 2; }
+        @keyframes flare { 0% { transform: scale(1) skewX(-2deg); } 100% { transform: scale(1.04) skewX(2deg); } }
+
+        /* SCENE STATE CHANGES */
+        .scene-wrapper.door-open .mailbox-door { transform: rotateX(-110deg); }
+        .scene-wrapper.door-open .mailbox-flag { transform: rotate(-90deg); }
+        .scene-wrapper.door-open .tap-hint { opacity: 0; transform: translate(-50%, -20px); }
+
+        .scene-wrapper.letter-up .card { opacity: 1; width: 92%; height: 410px; left: 4%; bottom: 80px; transform: scale(1) translateY(0); z-index: 10; box-shadow: 0 20px 40px rgba(43, 61, 42, 0.15); }
+        .scene-wrapper.letter-up .mailbox { transform: scale(0.85) translateY(30px); opacity: 0.12; pointer-events: none; }
+        .scene-wrapper.letter-up .ghibli-characters { opacity: 0.15; }
+
+        /* PAGES TRANSITION */
+        .page { display: none; opacity: 0; transform: scale(0.96) translateY(10px); transition: opacity 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); flex-direction: column; height: 100%; }
+        .page.active { display: flex; opacity: 1; transform: scale(1) translateY(0); }
+
+        h2 { font-family: 'Merriweather', serif; font-size: 19px; font-weight: 700; color: var(--text-dark); margin-bottom: 8px; line-height: 1.4; }
+        
+        .fade-in-text {
+            animation: fadeInTextEffect 1s ease forwards;
+            color: var(--text-muted); font-size: 13px; line-height: 1.6; margin-bottom: 20px;
+        }
+        @keyframes fadeInTextEffect { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn { display: inline-flex; align-items: center; justify-content: center; background-color: var(--ghibli-grass); color: white; border: none; padding: 12px 24px; font-size: 14px; font-weight: 500; border-radius: 20px; cursor: pointer; transition: all 0.25s ease; width: 100%; box-shadow: 0 4px 10px rgba(75, 106, 74, 0.2); }
+        .btn:hover { background-color: #3b543a; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(75, 106, 74, 0.3); }
+        .btn:active { transform: translateY(0); }
+        .btn-secondary { background-color: transparent; color: var(--text-muted); border: 1px solid #cbd5cb; margin-top: auto; box-shadow: none; }
+        .btn-secondary:hover { background-color: #f2f7f1; color: var(--text-dark); box-shadow: none; transform: none; }
+
+        .btn-group { display: flex; gap: 12px; margin-top: auto; position: relative; height: 45px; width: 100%; }
+        #btn-no { background-color: transparent; color: var(--text-muted); border: 1px solid #d3ded2; position: absolute; right: 0; width: calc(50% - 6px); transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); box-shadow: none; }
+        #btn-yes { width: calc(50% - 6px); position: absolute; left: 0; }
+
+        .input-container { margin-bottom: 20px; width: 100%; }
+        .custom-input { width: 100%; padding: 14px 16px; border: 1px solid #d3ded2; border-radius: 12px; font-size: 14px; outline: none; color: var(--text-dark); transition: border 0.3s; }
+        .custom-input:focus { border-color: var(--ghibli-grass); background-color: #fdfdfd; }
+
+        .summary-box { background-color: #f2f7f1; border-radius: 10px; padding: 14px; margin-bottom: 12px; text-align: left; border: 1px dashed #cbd5cb; animation: popUp 0.5s ease; }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        .summary-label { font-size: 11px; text-transform: uppercase; color: var(--ghibli-grass); font-weight: 600; margin-bottom: 4px; }
+        .summary-value { font-family: 'Merriweather', serif; font-size: 14px; font-weight: 700; color: var(--text-dark); }
+
+        .sparkle {
+            position: absolute; color: #f29f05; font-size: 12px; pointer-events: none;
+            animation: sparkleAnim 1.5s linear infinite; opacity: 0;
+        }
+        @keyframes sparkleAnim { 0% { transform: scale(0) rotate(0deg); opacity: 0; } 50% { opacity: 1; } 100% { transform: scale(1.3) rotate(180deg); opacity: 0; } }
+
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+    </style>
+</head>
+<body>
+
+    <div class="clouds-container">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+    </div>
+    <div class="leaf-ambient leaf-1"></div>
+    <div class="leaf-ambient leaf-2"></div>
+    <div class="leaf-ambient leaf-3"></div>
+    <div class="meadow"></div>
+
+    <canvas id="petal-canvas"></canvas>
+
+    <div class="scene-wrapper" id="sceneWrapper">
+        
+        <div class="tap-hint" id="tapHint">Tap the mailbox to open ✨</div>
+
+        <div class="mailbox" onclick="triggerMailboxOpen()">
+            <div class="mailbox-inside"></div>
+            <div class="mailbox-door"></div>
+            <div class="mailbox-flag"></div>
+            <div class="mailbox-post"></div>
+        </div>
+
+        <div class="card" id="mainCard">
+            <button class="btn-back" id="backBtn" onclick="prevPage()">&larr;</button>
+            
+            <div id="page1" class="page active">
+                <div class="card-header-deco">
+                    <div class="avatar-kaonashi">
+                        <div class="kaonashi-mask">
+                            <div class="kaonashi-mark-top"></div>
+                            <div class="kaonashi-eyes"></div>
+                            <div class="kaonashi-mouth"></div>
+                        </div>
+                    </div>
+                    <div class="header-title-side">
+                        <div class="title-top">Spirited Delivery</div>
+                        <div class="title-sub">Air Mail #01</div>
+                    </div>
+                </div>
+                <h2>Hey, You! 💌</h2>
+                <p class="fade-in-text">A sweet little letter just landed in your mailbox. Curious to see what's inside? Let's open it now.</p>
+                <button class="btn" style="margin-top: auto;" onclick="nextPage(2)">Open Letter</button>
+            </div>
+
+            <div id="page2" class="page">
+                <div class="card-header-deco">
+                    <div class="avatar-totoro">
+                        <div class="totoro-face-details"></div>
+                        <div class="totoro-belly"></div>
+                    </div>
+                    <div class="header-title-side">
+                        <div class="title-top">My Neighbor</div>
+                        <div class="title-sub">Forest Whispers</div>
+                    </div>
+                </div>
+                <h2>By the way...</h2>
+                <p class="fade-in-text">The weather has been absolutely beautiful lately. It feels like such a waste to spend the upcoming weekend trapped inside the room.</p>
+                <button class="btn" style="margin-top: auto;" onclick="nextPage(3)">Continue</button>
+            </div>
+
+            <div id="page3" class="page">
+                <div class="card-header-deco">
+                    <div class="avatar-kodama">
+                        <div class="kodama-eyes"></div>
+                        <div class="kodama-mouth"></div>
+                    </div>
+                    <div class="header-title-side">
+                        <div class="title-top">Tree Spirit</div>
+                        <div class="title-sub">Princess Call</div>
+                    </div>
+                </div>
+                <h2>Are you free this weekend? Want to hang out?</h2>
+                <p class="fade-in-text">I'm officially asking you out.</p>
+                <div class="btn-group">
+                    <button id="btn-yes" class="btn" onclick="nextPage(4)">I'd love to!</button>
+                    <button id="btn-no" class="btn" onmouseover="evade()" onclick="evade()">No</button>
+                </div>
+            </div>
+
+            <div id="page4" class="page">
+                <div class="card-header-deco">
+                    <div class="avatar-jiji">
+                        <div class="jiji-eyes"></div>
+                        <div class="jiji-nose"></div>
+                    </div>
+                    <div class="header-title-side">
+                        <div class="title-top">Black Cat Delivery</div>
+                        <div class="title-sub">Bakery Note</div>
+                    </div>
+                </div>
+                <h2>Awesome!</h2>
+                <p class="fade-in-text">You can choose whatever you want to do or where we should go. Write it down here:</p>
+                <div class="input-container">
+                    <input type="text" id="user-destination" class="custom-input" placeholder="E.g., Grab some ice cream / take a walk..." autocomplete="off">
+                </div>
+                <button class="btn" style="margin-top: auto;" onclick="finalize()">Lock Choice</button>
+            </div>
+
+            <div id="page5" class="page">
+                <div class="card-header-deco">
+                    <div class="avatar-calcifer">
+                        <div class="calcifer-eyes"></div>
+                        <div class="calcifer-mouth"></div>
+                    </div>
+                    <div class="header-title-side">
+                        <div class="title-top">Moving Castle</div>
+                        <div class="title-sub">A Hearth's Oath</div>
+                    </div>
+                </div>
+                <h2>It's a deal! ✨</h2>
+                <p class="fade-in-text">Your choice has been saved. I honestly can't wait to hang out with you.</p>
+                <div class="summary-box">
+                    <div class="summary-label">Our Agenda</div>
+                    <div id="final-choice" class="summary-value">—</div>
+                </div>
+                <button class="btn btn-secondary" onclick="closeMailbox()">Put Back & Close Box</button>
+            </div>
+
+        </div> 
+
+        <div class="ghibli-characters">
+            <div class="chibi-totoro"><div class="totoro-eyes"></div></div>
+            <div class="susuwatari"><div class="susu-eyes"></div></div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let petalAnimationId = null;
+        let sparkleInterval = null;
+
+        function triggerMailboxOpen() {
+            const wrapper = document.getElementById('sceneWrapper');
+            if(!wrapper.classList.contains('door-open')) {
+                wrapper.classList.add('door-open');
+                
+                const hint = document.getElementById('tapHint');
+                if (hint) { 
+                    hint.style.opacity = '0'; 
+                    setTimeout(() => hint.remove(), 400); 
+                }
+                setTimeout(() => { 
+                    wrapper.classList.add('letter-up'); 
+                    updateBackButton(); 
+                }, 800); 
+            }
+        }
+
+        function closeMailbox() {
+            const wrapper = document.getElementById('sceneWrapper');
+            const current = document.getElementById(`page${currentPage}`);
+            if(current) current.classList.remove('active');
+            currentPage = 1;
+            document.getElementById('page1').classList.add('active');
+            updateBackButton();
+            wrapper.classList.remove('letter-up');
+            
+            document.documentElement.style.setProperty('--bg-top', '#dbe9f4');
+            document.documentElement.style.setProperty('--bg-mid', '#edf4f9');
+            document.documentElement.style.setProperty('--bg-bottom', '#e1ebe2');
+            document.documentElement.style.setProperty('--ghibli-grass', '#5c8358');
+
+            clearInterval(sparkleInterval);
+            if (petalAnimationId) {
+                cancelAnimationFrame(petalAnimationId);
+                const canvas = document.getElementById('petal-canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+
+            setTimeout(() => { wrapper.classList.remove('door-open'); }, 300);
+        }
+
+        function nextPage(pageNum) {
+            const current = document.getElementById(`page${currentPage}`);
+            if(current) current.classList.remove('active');
+            currentPage = pageNum;
+            setTimeout(() => {
+                const next = document.getElementById(`page${pageNum}`);
+                if(next) next.classList.add('active');
+                updateBackButton();
+            }, 50);
+        }
+
+        function prevPage() {
+            if (currentPage === 1) {
+                closeMailbox();
+            } else if (currentPage > 1) {
+                if (currentPage === 3) {
+                    const btnNo = document.getElementById('btn-no');
+                    btnNo.style.position = 'absolute'; 
+                    btnNo.style.left = 'auto'; 
+                    btnNo.style.top = 'auto'; 
+                    btnNo.style.right = '0';
+                }
+                const current = document.getElementById(`page${currentPage}`);
+                if(current) current.classList.remove('active');
+                currentPage--;
+                setTimeout(() => {
+                    const prev = document.getElementById(`page${currentPage}`);
+                    if(prev) prev.classList.add('active');
+                    updateBackButton();
+                }, 50);
+            }
+        }
+
+        function updateBackButton() {
+            const backBtn = document.getElementById('backBtn');
+            backBtn.style.display = document.getElementById('sceneWrapper').classList.contains('letter-up') ? 'flex' : 'none';
+        }
+
+        function evade() {
+            const btnNo = document.getElementById('btn-no');
+            const card = document.querySelector('.card');
+            const maxX = card.clientWidth - btnNo.clientWidth - 40;
+            const maxY = card.clientHeight - btnNo.clientHeight - 80;
+            const randomX = Math.floor(Math.random() * maxX) + 20;
+            const randomY = Math.floor(Math.random() * maxY) + 60;
+            
+            btnNo.style.position = 'absolute'; 
+            btnNo.style.left = randomX + 'px'; 
+            btnNo.style.top = randomY + 'px';
+        }
+
+        function finalize() {
+            const inputVal = document.getElementById('user-destination').value.trim();
+            document.getElementById('final-choice').innerText = inputVal !== "" ? inputVal : "Go to a secret place of your choice";
+            nextPage(5);
+            
+            document.documentElement.style.setProperty('--bg-top', '#fbc5b3');
+            document.documentElement.style.setProperty('--bg-mid', '#ffe6da');
+            document.documentElement.style.setProperty('--bg-bottom', '#e3ecd5');
+            document.documentElement.style.setProperty('--ghibli-grass', '#4a6747');
+
+            triggerPetals();
+            createSparkles();
+        }
+
+        function createSparkles() {
+            const card = document.getElementById('mainCard');
+            sparkleInterval = setInterval(() => {
+                const sparkle = document.createElement('div');
+                sparkle.classList.add('sparkle');
+                sparkle.innerText = '✨';
+                sparkle.style.left = Math.random() * (card.clientWidth - 20) + 'px';
+                sparkle.style.top = Math.random() * (card.clientHeight - 20) + 'px';
+                card.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 1500);
+            }, 400);
+        }
+
+        function triggerPetals() {
+            const canvas = document.getElementById('petal-canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth; 
+            canvas.height = window.innerHeight;
+            
+            let particles = [];
+            const colors = ['#fff5f6', '#fae1e4', '#ffffff', '#e2ebe2'];
+            
+            for (let i = 0; i < 75; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width, 
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 5 + 3, 
+                    d: Math.random() * canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5, 
+                    tiltAngleIncremental: Math.random() * 0.03 + 0.01, 
+                    tiltAngle: 0
+                });
+            }
+            
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p) => {
+                    p.tiltAngle += p.tiltAngleIncremental; 
+                    p.y += (Math.cos(p.d) + 1.5 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle) * 0.8; 
+                    p.tilt = Math.sin(p.tiltAngle) * 10;
+                    
+                    ctx.beginPath(); 
+                    ctx.arc(p.x + p.tilt, p.y, p.r, 0, Math.PI * 2, false);
+                    ctx.fillStyle = p.color; 
+                    ctx.fill();
+                });
+                
+                if (currentPage === 5) {
+                    particles.forEach(p => {
+                        if (p.y > canvas.height) {
+                            p.y = -20;
+                            p.x = Math.random() * canvas.width;
+                        }
+                    });
+                    petalAnimationId = requestAnimationFrame(draw);
+                }
+            }
+            draw();
+        }
+
+        window.addEventListener('resize', () => {
+            const canvas = document.getElementById('petal-canvas');
+            if (canvas && currentPage === 5) {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+        });
+    </script>
+</body>
+</html>
